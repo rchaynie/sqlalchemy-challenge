@@ -9,15 +9,14 @@ app = Flask(__name__)
 
 @app.route("/")
 def home(): 
-    return """
-    <h1>The following routes are available</h1>
-    <ul> 
-        <li>/api/v1.0/precipitation</li>
-        <li>/api/v1.0/stations</li>
-        <li>/api/v1.0/tobs</li>
-        <li>/api/v1.0/<start></li>
-        <li>/api/v1.0/<start>/<end></li>
-    </ul> 
+    return """ 
+    <h1>The following routes are available</h1> 
+    <h2>/api/v1.0/precipitation</h2>
+    <h2>/api/v1.0/stations</h2>
+    <h2>/api/v1.0/tobs</h2>
+    <h2>/api/v1.0/<start></h2>
+    <h2>/api/v1.0/<start>/<end></h2>
+ 
     """
 
 @app.route("/api/v1.0/precipitation")
