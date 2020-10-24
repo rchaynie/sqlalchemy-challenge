@@ -1,28 +1,92 @@
+
+
+import sqlalchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine, func
+
+import datetime as dt
+import pandas as pd
+
 from flask import Flask, jsonify
-# from flask_sqlalchemy import SQLAlchemy
 
+
+#################################################
+# Database Setup
+#################################################
+
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+Base = automap_base()
+Base.prepare(engine, reflect=True)
+
+Base.classes.keys()
+
+# Save references to each table
+
+measurement=Base.classes.measurement
+
+station=Base.classes.station
+
+
+
+
+#################################################
+# Flask Setup
+#################################################
 app = Flask(__name__)
-# db =SQLAlchemy(app)
 
 
+#################################################
+# Flask Routes
+#################################################
 
 
 @app.route("/")
 def home(): 
-    return
-    "The following routes are available"
-    "/api/v1.0/precipitation" 
-    "/api/v1.0/stations" 
-    "/api/v1.0/tobs" 
-    "/api/v1.0/<start>" 
-    "/api/v1.0/<start>/<end>" 
- 
-    """
+    """ The following routes are available  """
+    return (
+        f"/api/v1.0/precipitation"
+        f"/api/v1.0/stations"
+        f"/api/v1.0/tobs"
+        f"/api/v1.0/<start>"
+        f"/api/v1.0/<start>/<end>")
+    
+   
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
-    return "test"
+    session = Session(engine)
 
+    # Design a query to retrieve the last 12 months of precipitation data and plot the results
+    # Calculate the date 1 year ago from the last data point in the database
+
+    max_date=session.query(func.max(measurement.date)).all()[0]
+    
+    
+    one_year = dt.timedelta(days=365)
+
+    min_date = dt.date(2017, 8, 23) - one_year
+
+    min_date
+
+    # Perform a query to retrieve the data and precipitation scores
+
+    lasy_year_prcp=session.query(measurement.date, measurement.prcp).filter(measurement.date >= min_date).all()
+
+    session.close()
+
+    # Save the query results as a Pandas DataFrame and set the index to the date column
+
+    # prcp_df=pd.DataFrame(lasy_year_prcp)
+    # prcp_df=prcp_df.set_index("date").sort_values("date")
+    # prcp_df
+
+    
+
+    return jsonify(lasy_year_prcp)
+    
+
+    
 @app.route("/api/v1.0/stations")
 def stations():
     return "test"
@@ -40,17 +104,6 @@ def end():
     return"test"
 
 
-#  try: 
-#         name = request.json.get("name")
-#         age = int(request.json.get("age"))
-#         new_pet = Pet(name=name, age=age)
-#         db.session.add(new_pet)
-#         db.session.commit(new_pet)
-#         return {"msg": "Success"}
-#     except Exception as e:
-#         return {"error": e}
-
-# /api/v1.0/<start> and /api/v1.0/<start>/<end>
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
