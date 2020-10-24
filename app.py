@@ -81,9 +81,9 @@ def precipitation():
     # prcp_df=prcp_df.set_index("date").sort_values("date")
     # prcp_df
 
-    results = list(np.ravel(lasy_year_prcp))
+  
 
-    return jsonify(results)
+    return jsonify(lasy_year_prcp)
     
 
     
@@ -106,4 +106,4 @@ def end():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
